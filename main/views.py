@@ -32,6 +32,11 @@ def muhasebe(request):
     return render(request , 'muhasebe.html' , data) 
 def muhasebe_update(request , id):
     siparis = Data.objects.get(id=id)
+    '''
+    TODO 
+    FORM UPDATE VIEWS
+    '''
+
 
     data = {
         'siparis' : siparis
