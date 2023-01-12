@@ -30,7 +30,12 @@ def muhasebe(request):
     }
     
     return render(request , 'muhasebe.html' , data) 
+def muhasebe_update(request , id):
+    siparis = Data.objects.get(id=id)
 
-
+    data = {
+        'siparis' : siparis
+    }
+    return render(request , 'muhasebe_update.html' , data)
 def pl(request):
     return render(request , 'pl.html') 
