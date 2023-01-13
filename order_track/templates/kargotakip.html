@@ -1,0 +1,56 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-gH2yIJqKdNHPEq0n4Mqa/HGKIhSkIHeL5AyhkYV8i59U5AR6csBvApHHNl/vI1Bx" crossorigin="anonymous">
+    
+
+    <title>
+        KARGOTAKIP
+    </title>
+
+ 
+</head>
+<body>
+
+    
+
+    <form class="row g-3" style="padding: 20px;" method="POST">{% csrf_token %}
+        <div class="col-auto">
+          <button type="submit" class="btn btn-primary mb-3" style="width: 100px;">Show</button>
+        </div>
+      </form>
+    
+    
+    <div class="row row-cols-1 row-cols-md-3 g-4 baby">
+        {% for abc in info %}
+            <div class="col">
+                <div class="card {{ abc.bg }}" style="width: 18rem;">
+                    <div class="card-body">
+                      <h5 class="card-title"> UPS - {{ abc.Tracknumber }} </h5>
+                    </div>
+                    <ul class="list-group list-group-flush">
+                      <li class="list-group-item"> <strong>Durum : </strong> {{ abc.Status }} </li>
+                      <li class="list-group-item"> <strong>Konum : </strong> {{ abc.Location }} </li>
+                      <li class="list-group-item"> <strong>Tarih : </strong> {{ abc.Date }} </li>
+                      <li class="list-group-item"> <strong>Saat :</strong> {{ abc.Time }} </li>
+                    </ul>
+                    <div class="card-footer">
+                        Son Güncelleme {{abc.lastupdate}} Önce
+                      </div>
+                  </div>
+                  
+            </div>
+                {% endfor %}
+    
+    </div>
+
+    
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.min.js" integrity="sha384-ODmDIVzN+pFdexxHEHFBQH3/9/vQ9uori45z4JjnFsRydbmQbmL5t1tQ0culUzyK" crossorigin="anonymous"></script>    
+
+</body>
+</html>

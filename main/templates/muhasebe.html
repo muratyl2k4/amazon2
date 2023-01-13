@@ -15,20 +15,30 @@
         <thead>
           <tr>
             <th scope="col">TARIH </th>
+            <th scope="col">ASIN</th>
+            <th scope="col">ALICI SIPARIS NUMARASI </th>
             <th scope="col">SATICI SIPARIS NUMARASI </th>
-            <th scope="col">SATIS </th>
+            <th scope="col">SATIS FIYATI</th>
             <th scope="col">AMAZON FEE</th>
+            <th scope="col">MALIYET</th>
             <th scope="col">KAR</th>
+            <th scope="col">YUZDELIK KAR</th>
+
           </tr>
         </thead>
         <tbody>
         {% for x in info %}    
           <tr>
             <td>{{ x.TARIH }}</td>
-            <th scope="row">{{ x.SATICI_SIPARIS_NUMARASI }}</th>
+            <td>{{ x.ASIN }}</td>
+            <td>{{ x.ALICI_SIPARIS_NUMARASI }}</td>
+            <th>{{ x.SATICI_SIPARIS_NUMARASI }}</th>
             <td>{{ x.SATIS_FIYATI }}</td>
             <td>{{ x.AMAZON_FEE }}</td>
+            <td>{{ x.MALIYET }}</td>
             <td>{{ x.KAR }}</td>
+            <td>{{ x.YUZDELIK_KAR }}</td>
+            <td><a href="muhasebe/{{x.id}}" class="update btn btn-dark">GUNCELLE</a></td>
           </tr>
         {% endfor %}
           

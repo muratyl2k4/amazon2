@@ -7,10 +7,6 @@ def home(request):
     return render(request , 'index.html') 
 
 
-def kargotakip(request):
-    return render(request , 'kargotakip.html') 
-
-
 def muhasebe(request):
     mailparse(user = request.user)
     d = Data.objects.filter(KULLANICI = request.user)
