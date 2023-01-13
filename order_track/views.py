@@ -7,6 +7,13 @@ import json
 
 def kargotakip(request):
     liste = []
+    '''
+    TODO
+    1- last status ve last update database e kaydedilecek
+    2- kargotakip fonksiyonda donusturulup baska dosyadan cagirilacak
+    3- takip numaralari excelden alinip database e kaydedileck (bekirabi)  
+    4- Order modeline kargo sirketlerinin secenegi eklenicek ve exceldeki sirket kisimlari api nin courier codelarina donusturulecek
+    '''
     if request.method == "POST":
         apiKey = "r2k8yxvv-afjo-bhpn-e3vq-k3v38keny7tw"
         tracker = TrackingApi(apiKey)
