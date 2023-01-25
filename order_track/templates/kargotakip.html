@@ -18,19 +18,19 @@
 
     
 
-    <form class="row g-3" style="padding: 20px;" method="POST">{% csrf_token %}
-        <div class="col-auto">
-          <button type="submit" class="btn btn-primary mb-3" style="width: 100px;">Show</button>
-        </div>
-      </form>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Upload</button>
+  </form>
     
     
-    <div class="row row-cols-1 row-cols-md-3 g-4 baby">
+    <div class="row row-cols-1 row-cols-md-3 g-4 baby mx-auto">
         {% for abc in info %}
             <div class="col">
                 <div class="card {{ abc.bg }}" style="width: 18rem;">
                     <div class="card-body">
-                      <h5 class="card-title"> UPS - {{ abc.Tracknumber }} </h5>
+                      <h5 class="card-title text-center">{{ abc.Tracknumber }} </h5>
                     </div>
                     <ul class="list-group list-group-flush">
                       <li class="list-group-item"> <strong>Durum : </strong> {{ abc.Status }} </li>
@@ -44,7 +44,7 @@
                   </div>
                   
             </div>
-                {% endfor %}
+          {% endfor %}
     
     </div>
 

@@ -3,12 +3,16 @@ from main.models import Data
 
 class Order(models.Model):
 
-    Order = models.ForeignKey(Data , null=True , blank=True , on_delete=models.CASCADE)
+    AmazonOrderId = models.CharField(max_length=100 , null=True , blank=True )
     Tracknumber = models.CharField(max_length=200 , null=True , blank=True)
     Courier_Name = models.CharField(max_length=200 , null=True , blank=True)
     Last_Status = models.CharField(max_length=500 , null=True , blank=True)
     Last_Update = models.DateField(null=True , blank=True)
 
     def __str__(self):
-        return self.Tracknumber
+        
+        
+        return self.AmazonOrderId + ' ' + str(self.Tracknumber or ' ') 
+class OrderFileData(models.Model):
+    file = models.FileField()
 
