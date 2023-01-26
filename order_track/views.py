@@ -4,7 +4,6 @@ from .forms import UploadFileForm
 from .fileupload import uploaded_file
 from main.models import Data
 
-
 def kargotakip(request):
     '''
     TODO
@@ -13,20 +12,11 @@ def kargotakip(request):
     3- takip numaralari excelden alinip database e kaydedileck --> DONE
     4- Order modeline kargo sirketlerinin secenegi eklenicek ve exceldeki sirket kisimlari api nin courier codelarina donusturulecek --> DONE
     '''
-    
-
-
-
-    order_list = []
     apiKey = "uh77udwn-90ld-lzge-e1ib-pmkl0ct2zl68"
-    
     order_list = order_track(apiKey=apiKey)
     if request.method == 'POST':
-        print('1')
         form = UploadFileForm(request.POST, request.FILES)
-        
         if form.is_valid():
-            print('2')
             uploaded_file(request.FILES['file'] , Data)
     else:
         form = UploadFileForm()
@@ -34,7 +24,6 @@ def kargotakip(request):
             "info" : order_list , 
             'form' : form
         }
-
     return render(request , "kargotakip.html" , data)
     
 
