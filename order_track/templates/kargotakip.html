@@ -30,11 +30,10 @@
             <div class="col">
                 <div class="card {{ abc.bg }}" style="width: 18rem;">
                     <div class="card-body">
-                      <h5 class="card-title text-center">{{ abc.Tracknumber }} </h5>
+                      <a style='text-decoration: none !important;' href="https://www.parcelsapp.com/en/tracking/{{abc.Tracknumber}}"><h5 class="card-title text-center text-dark">{{ abc.Tracknumber }}</h5></a>
                     </div>
                     <ul class="list-group list-group-flush">
                       <li class="list-group-item"> <strong>Durum : </strong> {{ abc.Status }} </li>
-                      <li class="list-group-item"> <strong>Konum : </strong> {{ abc.Location }} </li>
                       <li class="list-group-item"> <strong>Tarih : </strong> {{ abc.Date }} </li>
                       <li class="list-group-item"> <strong>Saat :</strong> {{ abc.Time }} </li>
                     </ul>

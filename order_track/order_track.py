@@ -23,10 +23,11 @@ def order_track(apiKey):
             dict = json.loads(result.decode('utf-8'))
             ## ORDER STATUS 
             data = [abc for abc in dict.get('data')][-1]
-            ## CHECKPOINTS
-            trackinfo = [abc for abc in data.get('origin_info').get('trackinfo')]
             ## DELIVERY STATUS 
             delivery_status = data.get('delivery_status').upper()
+            order = Order.objects.get(Tracknumber = tracknumber)
+            if order.Last_Status == None or order.Last_Status != 'DELIVERED' : order.Last_Status = 'Tracking in Progress...'
+            order.save()
             ## LAST CHECKPOINT TIME
             last_cp_time = data.get('lastest_checkpoint_time')
             ##DATETIME

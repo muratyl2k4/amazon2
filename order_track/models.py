@@ -7,7 +7,7 @@ class Order(models.Model):
     Tracknumber = models.CharField(max_length=200 , null=True , blank=True)
     Courier_Name = models.CharField(max_length=200 , null=True , blank=True)
     Last_Status = models.CharField(max_length=500 , null=True , blank=True)
-    Last_Update = models.DateField(null=True , blank=True)
+    
 
     def __str__(self):
         
