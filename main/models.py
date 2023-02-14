@@ -16,11 +16,11 @@ class Data(models.Model):
     SATIS_FIYATI = models.FloatField(blank=True , null=True)
     AMAZON_FEE = models.FloatField(blank=True ,null=True)
     MALIYET = models.FloatField(blank=True , null=True)
+    DEPO_MALIYET = models.FloatField(blank=True , null=True)
     KAR = models.FloatField(blank=True , null=True)
     YUZDELIK_KAR = models.FloatField(blank=True , null=True)
     
     def __str__(self):
         return self.SATICI_SIPARIS_NUMARASI
 class excelData(models.Model):
-    file = models.FileField(upload_to="uploads/")
-
+    file = models.FileField(upload_to='attachment/%Y/%m/%d')
