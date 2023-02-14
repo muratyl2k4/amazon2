@@ -23,6 +23,7 @@ def order_track(apiKey):
             dict = json.loads(result.decode('utf-8'))
             ## ORDER STATUS 
             data = [abc for abc in dict.get('data')][-1]
+            print(data)
             ## DELIVERY STATUS 
             delivery_status = data.get('delivery_status').upper()
             order = Order.objects.get(Tracknumber = tracknumber)
@@ -45,7 +46,9 @@ def order_track(apiKey):
             if delivery_status.lower() == "delivered": bg = "bg-success"
             elif int(passing_time.total_seconds() /86400)>= 2 : bg = "bg-warning"
             else: bg = "bg-primary"
-            informations = {"Tracknumber" : tracknumber , "Status" : delivery_status , "Time" : time , "Location" :  None , "Date" : date , "lastupdate" : lastupdate , "bg" : bg}
+            ##LINK 
+            if courier_code == 'hermes-uk' : weblink = f'https://www.evri.com/track/parcel/{tracknumber}/details'
+            informations = {"Tracknumber" : tracknumber , "Status" : delivery_status , "Time" : time , "Location" :  None , "Date" : date , "lastupdate" : lastupdate , "bg" : bg , 'weblink' : weblink}
             order_info_list.append(informations)
         except Exception as e: 
             print('KARGO TAKIP HATASI : ', ord , e)

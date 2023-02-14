@@ -6,3 +6,9 @@ class UploadFileForm(forms.ModelForm):
         model = excelData
     
         fields = ('file' , )
+
+
+class MALIYET(forms.Form):
+    product_cost = forms.TextInput
+    warehouse_cost = forms.TextInput
+    order_id = forms.CharField
