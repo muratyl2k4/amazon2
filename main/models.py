@@ -19,8 +19,33 @@ class Data(models.Model):
     DEPO_MALIYET = models.FloatField(blank=True , null=True)
     KAR = models.FloatField(blank=True , null=True)
     YUZDELIK_KAR = models.FloatField(blank=True , null=True)
-    
+    class Meta:
+        abstract = True
     def __str__(self):
         return self.SATICI_SIPARIS_NUMARASI
+
+class Ingiltere(Data):
+    def __init__(self, *args, **kwargs):
+        for f in self._meta.fields:
+            if f.attname == "parent_field":
+                f.default = "child default"
+        super(Ingiltere, self).__init__(*args, **kwargs)
+class Almanya(Data):
+    def __init__(self, *args, **kwargs):
+        for f in self._meta.fields:
+            if f.attname == "parent_field":
+                f.default = "child default"
+        super(Almanya, self).__init__(*args, **kwargs)
+class Fransa(Data):
+    def __init__(self, *args, **kwargs):
+        for f in self._meta.fields:
+            if f.attname == "parent_field":
+                f.default = "child default"
+        super(Fransa, self).__init__(*args, **kwargs)
+
+
+
+
+    
 class excelData(models.Model):
     file = models.FileField(upload_to='attachment/%Y/%m/%d')

@@ -1,94 +1,127 @@
-
-  
 from imap_tools import MailBox , AND
-from django.contrib.auth.models import User
-from .models import *
+from .models import Almanya , Ingiltere , Fransa
 import re
 import locale
 from bs4 import BeautifulSoup
-
-
 from datetime import datetime
 
 
-def mailparse(user):
+def mailparse(user , country):
+    if country == Almanya : 
+        subjectFilter = 'Artikel verkauft - Bitte jetzt verschicken:'
+        rOrderId = 'Bestellnummer:'
+        rOrderDate = 'Verkauft am: '
+        rPrice = 'Preis: '
+        rShipping = 'Versandkosten: '
+        rAmazonFee = 'Amazon-Gebühren: '
+        rYourEarnings = 'Ihre Einnahmen: '
+        rCurrency = 'EUR'
+    if country == Ingiltere : 
+        subjectFilter = 'Sold, dispatch now:'
+        rOrderId = 'Order ID:'
+        rOrderDate = 'Order date: '
+        rPrice = 'Price: '
+        rShipping = 'Shipping: '
+        rAmazonFee = 'Amazon fees: '
+        rYourEarnings = 'Your earnings: '
+        rCurrency = '£'
+    if country == Fransa:
+        subjectFilter = f"Commande"
+        rOrderId = 'Commande n° :'
+        rOrderDate = 'Date de la vente : '
+        rPrice = 'Prix : '
+        rShipping = 'Shipping: '
+        rAmazonFee = 'Frais Amazon.fr : '
+        rYourEarnings = 'Montant total dû au vendeur : '
+        rCurrency = 'EUR'
+        
+
+
     ###EMAIL PARSE
-    username = "veonxltd@gmail.com"
-    app_password = "ykibsqevqzelimln"
+    username = "smeaydn@gmail.com"
+    app_password = "wacrswxrublisork"
     mb = MailBox('imap.gmail.com').login(username, app_password)
-    last_date = list(Data.objects.filter(KULLANICI = user))
-    dx = last_date[-1].TARIH
-    messages = mb.fetch(AND(subject='Sold, dispatch now:' , date_gte=dx))
+    last_date = list(country.objects.filter(KULLANICI = user))
+    if len(last_date) > 0:
+        dx = last_date[-1].TARIH
+    messages = mb.fetch(AND(subject=subjectFilter , date_gte=datetime.strptime('1/02/2023' , '%d/%m/%Y').date()))
     liste = []
     i=0 
-    
+     
     for msg in messages:
+         
+        i+=1
+        
+        
+        if country == Ingiltere or country ==Fransa : mail = BeautifulSoup(msg.html , 'html.parser').prettify()
+        elif country == Almanya : mail = msg.text
+        print(mail)
+
+        ##FROM 
+        #ORDER İD 
+        order_id_text=re.findall(f"{rOrderId} .*$",mail,re.MULTILINE)
+        for x in order_id_text:
+
+            order_id = re.findall('(?<=: )(.*)', x)
+            oi = order_id[0]
+
+            
+        #ORDER DATE
+        order_date_text=re.findall(f"{rOrderDate}.*$",mail,re.MULTILINE)
+        locale.setlocale(locale.LC_ALL, 'en_US')
+
+        for x in order_date_text:
+            order_date = re.findall('(?<=: )(.*)', x)
+            od = order_date[0]
+            
         try : 
-            aaaa = BeautifulSoup(msg.html , 'html.parser').prettify()
-
+            datetime_object = datetime.strptime(od.replace('.' , '/')[0:len(od)], "%d/%m/%Y") if not country == Almanya else datetime.strptime(od.replace('.' , '/')[0:len(od)-1], "%d/%m/%Y")
+        except Exception as e : 
+            pass        
+        #PRICE
+        price_text=re.findall(f"{rPrice}.*$",mail,re.MULTILINE)
+        for x in price_text:
+            price = re.findall('(?<=: )(.*)', x)
+            prc = price[0]
+        
+        #SHIPPING
+        shipping_text=re.findall(f"{rShipping}.*$",mail,re.MULTILINE)
+        for x in shipping_text:
+            shipping = re.findall('(?<=: )(.*)', x)
+            shp = shipping[0]
+        
+        
+        #AMAZON FEES
+        fee_text=re.findall(f"{rAmazonFee}.*$",mail,re.MULTILINE)
+        for x in fee_text:
+            fee = re.findall('(?<=: )(.*)', x)
+            afee = fee[0]
+            if country == Almanya or country == Fransa: afee = afee.replace('(' , '').replace(')' , '')
+ 
+        #YOUR EARNING
+        earning_text=re.findall(f"{rYourEarnings}.*$",mail,re.MULTILINE)
+        for x in earning_text:
+            earning = re.findall('(?<=: )(.*)', x)
+            ern = earning[0]
+        try:
+            b = country.objects.get(SATICI_SIPARIS_NUMARASI = oi[0:len(oi)])
             
-           
-          
-            ##FROM 
-            #ORDER İD 
-            order_id_text=re.findall("Order ID:.*$",aaaa,re.MULTILINE)
-            for x in order_id_text:
-
-                order_id = re.findall('(?<=: )(.*)', x)
-                oi = order_id[0]
-                print('x' , x)
-
-                
-            #ORDER DATE
-            order_date_text=re.findall("Order date: .*$",aaaa,re.MULTILINE)
-            locale.setlocale(locale.LC_ALL, 'en_US')
-
-            for x in order_date_text:
-                order_date = re.findall('(?<=: )(.*)', x)
-                od = order_date[0]
-                datetime_object = datetime.strptime(od[0:len(od)], "%d/%m/%Y")
-                    
-            #PRICE
-            price_text=re.findall("Price: .*$",aaaa,re.MULTILINE)
-            for x in price_text:
-                price = re.findall('(?<=: )(.*)', x)
-                prc = price[0]
-            
-            #SHIPPING
-            shipping_text=re.findall("Shipping: .*$",aaaa,re.MULTILINE)
-            for x in shipping_text:
-                shipping = re.findall('(?<=: )(.*)', x)
-                shp = shipping[0]
-            
-            
-            #AMAZON FEES
-            fee_text=re.findall("Amazon fees: .*$",aaaa,re.MULTILINE)
-            for x in fee_text:
-                fee = re.findall('(?<=: )(.*)', x)
-                afee = fee[0]
-            
-            #YOUR EARNING
-            earning_text=re.findall("Your earnings: .*$",aaaa,re.MULTILINE)
-            for x in earning_text:
-                earning = re.findall('(?<=: )(.*)', x)
-                ern = earning[0]
-            try:
-                b = Data.objects.get(SATICI_SIPARIS_NUMARASI = oi[0:len(oi)-1])
-                
-            except:
-                b = Data(
+        except:
+            try :
+                b = country(
                     KULLANICI = user, 
-                    SATICI_SIPARIS_NUMARASI = oi[0:len(oi)-1],
-                    SATIS_FIYATI  = float(prc.replace("£" , "")[0:len(prc)-1]),
-                    AMAZON_FEE  = float(afee.replace("£" , "")[0:len(afee)-1]),
+                    SATICI_SIPARIS_NUMARASI = oi[0:len(oi)],
+                    SATIS_FIYATI  = float(prc.replace(f"{rCurrency}" , "").replace(',' , '.')[0:len(prc)-1]),
+                    AMAZON_FEE  = float(afee.replace(f"{rCurrency}" , "").replace(',' , '.')[0:len(afee)-1]),
                     TARIH = datetime_object,
                     MALIYET = 0,
                     DEPO_MALIYET = 0
                 )
                 b.save()
-        except: 
-            print(1)
-
+            except Exception as e:
+                print(e) 
+            
+        
         
         
             
