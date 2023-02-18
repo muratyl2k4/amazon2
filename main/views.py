@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from .muhasebe import mailparse
-from .models import Ingiltere , Almanya , Fransa
+from .models import Ingiltere , Almanya , Fransa , Pazarlar
 from .fileupload import handle_uploaded_file
 from .forms import UploadFileForm
 from .forms import MALIYET
@@ -10,18 +10,20 @@ from django.core.files import File
 from django.http.response import HttpResponse
 from django.http import HttpResponseRedirect
 from datetime import datetime
+from django.contrib.auth.decorators import login_required
+
 
 def home(request):
     return render(request , 'index.html') 
 
-
-def dbdownload(request):
+@login_required(login_url='login')
+def dbdownload(request , country):
     now = datetime.now().strftime("%d_%m_%Y %H_%M_%S")
     
     connection = sqlite3.connect("db.sqlite3")
-    query = f"SELECT * FROM main_data where KULLANICI_ID = {request.user.id}"
+    query = f"SELECT * FROM main_{country} where KULLANICI_ID = {request.user.id}"
     df = pd.read_sql(query, connection)
-    filename= f"{request.user}_{now}.xlsx"
+    filename= f"{country}_{now}.xlsx"
     df.to_excel(f'main/static/{filename}')
      
     db_path = f'main\static\{filename}'
@@ -32,19 +34,71 @@ def dbdownload(request):
 
     return response
 
+@login_required(login_url='login')
 def muhasebe(request):
-    return render(request , 'muhasebe.html')
+    pazarlar = Pazarlar.objects.get(KULLANICI = request.user)
+    print(pazarlar)
+    if request.method == 'POST':
+        if request.POST['countries'] == 'DE':
+            pazarlar.DE = True
+            pazarlar.DEMAIL = request.POST['mail']
+            pazarlar.DEPASSWORD = request.POST['apppassword']
+            pazarlar.save()
+        elif request.POST['countries'] == 'UK':
+            pazarlar.UK = True
+            pazarlar.UKMAIL = request.POST['mail']
+            pazarlar.UKPASSWORD = request.POST['apppassword']
+            pazarlar.save()
+        elif request.POST['countries'] == 'FR':
+            pazarlar.FR = True
+            pazarlar.FRMAIL = request.POST['mail']
+            pazarlar.FRPASSWORD = request.POST['apppassword']
+            pazarlar.save()
+        
+    
+    
+    #pdict = {'pazarlar' : pazarlar.EN}
+    #keys = [i for i in pdict.keys()]
+    fr = Fransa.objects.filter(KULLANICI = request.user)
+    frSatis = sum([i.SATIS_FIYATI for i in fr])
+    frFee = sum([i.AMAZON_FEE for i in fr])
+    frProfit = sum([i.KAR for i in fr if i.KAR is not None])
+    frMaliyet = frSatis - frFee - frProfit
+    
+    de = Almanya.objects.filter(KULLANICI = request.user)
+    deSatis = sum([i.SATIS_FIYATI for i in de])
+    deFee = sum([i.AMAZON_FEE for i in de])
+    deProfit = sum([i.KAR for i in de if i.KAR is not None])
+    deMaliyet = deSatis - deFee - deProfit
+    
+    uk = Ingiltere.objects.filter(KULLANICI = request.user)
+    ukSatis = sum([i.SATIS_FIYATI for i in uk])
+    ukFee = sum([i.AMAZON_FEE for i in uk])
+    ukProfit = sum([i.KAR for i in uk if i.KAR is not None])
+    ukMaliyet = ukSatis - ukFee - ukProfit
 
+
+    
+
+    return render(request , 'muhasebe.html', {'x' : pazarlar.get_items(frKazanc= frSatis - frFee , frProfit=frProfit , frMaliyet=  frMaliyet ,
+                                                                        deKazanc= deSatis - deFee, deProfit= deProfit , deMaliyet=deMaliyet ,
+                                                                         ukKazanc=  ukSatis - ukFee , ukProfit=ukProfit , ukMaliyet=ukMaliyet)
+                                                })
+
+@login_required(login_url='login')
 def ingiltere(request):
    
     
-    d = reversed(Ingiltere.objects.filter(KULLANICI = request.user))
+    pazarlar = Pazarlar.objects.get(KULLANICI = request.user)
+    b = Ingiltere.objects.filter(KULLANICI = request.user)    
+    d = reversed(b)
     form = UploadFileForm(request.POST, request.FILES)
     maliyet_form = MALIYET(request.POST) 
     
     print("request", request.POST)
     data = {
             "info" : d ,
+            'len' : len(b) ,
             "form" : form , 
             
             }
@@ -80,24 +134,31 @@ def ingiltere(request):
                     }
 
         elif 'update_order_list' in request.POST:
-            mailparse(user = request.user)
-            print("Good Job!!")
+            if len(b) == 0 : 
+                mailparse(country=Ingiltere,user = request.user , email=pazarlar.UKMAIL , apppassword=pazarlar.UKPASSWORD , fdate=request.POST['date'])
+            else:
+                mailparse(country=Ingiltere,user = request.user , email=pazarlar.UKMAIL , apppassword=pazarlar.UKPASSWORD , fdate=None)
     else:
         print("no form posted")
         form = UploadFileForm()
 
     
     return render(request , 'ingiltere.html' , data) 
+    
+
+@login_required(login_url='login')
 def almanya(request):
    
-    
-    d = reversed(Almanya.objects.filter(KULLANICI = request.user))
+    pazarlar = Pazarlar.objects.get(KULLANICI = request.user)
+    b = Almanya.objects.filter(KULLANICI = request.user)    
+    d = reversed(b)
     form = UploadFileForm(request.POST, request.FILES)
     maliyet_form = MALIYET(request.POST) 
     
     print("request", request.POST)
     data = {
             "info" : d ,
+            'len' : len(b),
             "form" : form , 
             
             }
@@ -133,26 +194,32 @@ def almanya(request):
                     }
 
         elif 'update_order_list' in request.POST:
-            mailparse(country=Almanya,user = request.user)
-            print("Good Job!!")
+            if len(b) == 0 : 
+                mailparse(country=Almanya,user = request.user , email=pazarlar.UKMAIL , apppassword=pazarlar.UKPASSWORD , fdate=request.POST['date'])
+            else:
+                mailparse(country=Almanya,user = request.user , email=pazarlar.UKMAIL , apppassword=pazarlar.UKPASSWORD , fdate=None)
     else:
         print("no form posted")
         form = UploadFileForm()
 
     
     return render(request , 'almanya.html' , data) 
+
+@login_required(login_url='login')
 def fransa(request):
    
-    
-    d = reversed(Fransa.objects.filter(KULLANICI = request.user))
+    pazarlar = Pazarlar.objects.get(KULLANICI = request.user)
+    b = Fransa.objects.filter(KULLANICI = request.user)    
+    d = reversed(b)
+
     form = UploadFileForm(request.POST, request.FILES)
     maliyet_form = MALIYET(request.POST) 
     
     print("request", request.POST)
     data = {
             "info" : d ,
+            'len' : len(b),
             "form" : form , 
-            
             }
         
     if request.method == 'POST':
@@ -189,8 +256,12 @@ def fransa(request):
                     }
 
         elif 'update_order_list' in request.POST:
-            mailparse(country=Fransa,user = request.user)
-            print("Good Job!!")
+            if len(b) == 0 : 
+                mailparse(country=Fransa,user = request.user , email=pazarlar.UKMAIL , apppassword=pazarlar.UKPASSWORD , fdate=request.POST['date'])
+            else:
+                mailparse(country=Fransa,user = request.user , email=pazarlar.UKMAIL , apppassword=pazarlar.UKPASSWORD , fdate=None)
+            
+            return HttpResponseRedirect('../fransa')
     else:
         print("no form posted")
         form = UploadFileForm()

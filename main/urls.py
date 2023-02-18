@@ -8,5 +8,5 @@ urlpatterns = [
     path("ingiltere" , ingiltere ),
     path("almanya" , almanya),
     path("fransa" , fransa),
-    path("downloadfile" , dbdownload)
+    path("downloadfile/<str:country>" , dbdownload)
 ]

@@ -42,7 +42,25 @@ class Fransa(Data):
             if f.attname == "parent_field":
                 f.default = "child default"
         super(Fransa, self).__init__(*args, **kwargs)
+class Pazarlar(models.Model):
+    KULLANICI = models.ForeignKey(User , blank=True , null=True , on_delete = models.CASCADE)
+    UK = models.BooleanField(null=True , blank=True)
+    UKMAIL = models.CharField(null=True , blank=True , max_length=250)
+    UKPASSWORD = models.CharField(null=True , blank=True , max_length=250)
 
+    FR = models.BooleanField(null=True , blank=True)
+    FRMAIL = models.CharField(null=True , blank=True , max_length=250)
+    FRPASSWORD = models.CharField(null=True , blank=True , max_length=250)
+    
+    DE = models.BooleanField(null=True , blank=True)
+    DEMAIL = models.CharField(null=True , blank=True , max_length=250)
+    DEPASSWORD = models.CharField(null=True , blank=True , max_length=250)
+    def get_items(self , ukKazanc , ukProfit ,ukMaliyet ,frKazanc ,frProfit , frMaliyet , deKazanc , deProfit , deMaliyet):
+
+        items = [('UK' , self.UK , '../ingiltere' , ukKazanc , ukProfit , ukMaliyet , 'İNGİLTERE') 
+                 ,('FR' , self.FR , '../fransa' , frKazanc , frProfit , frMaliyet , 'FRANSA') ,
+                   ('DE' , self.DE , '../almanya' , deKazanc, deProfit , deMaliyet , 'ALMANYA')]
+        return items
 
 
 

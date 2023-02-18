@@ -6,7 +6,8 @@ from bs4 import BeautifulSoup
 from datetime import datetime
 
 
-def mailparse(user , country):
+def mailparse(user , country , email , apppassword , fdate):
+    print(fdate)
     if country == Almanya : 
         subjectFilter = 'Artikel verkauft - Bitte jetzt verschicken:'
         rOrderId = 'Bestellnummer:'
@@ -34,17 +35,20 @@ def mailparse(user , country):
         rAmazonFee = 'Frais Amazon.fr : '
         rYourEarnings = 'Montant total dû au vendeur : '
         rCurrency = 'EUR'
+
         
 
 
     ###EMAIL PARSE
-    username = "smeaydn@gmail.com"
-    app_password = "wacrswxrublisork"
+    username = email
+    app_password = apppassword
     mb = MailBox('imap.gmail.com').login(username, app_password)
     last_date = list(country.objects.filter(KULLANICI = user))
+    dx = datetime.strptime(fdate , '%Y-%m-%d').date() if not fdate == None else None
     if len(last_date) > 0:
         dx = last_date[-1].TARIH
-    messages = mb.fetch(AND(subject=subjectFilter , date_gte=datetime.strptime('1/02/2023' , '%d/%m/%Y').date()))
+    
+    messages = mb.fetch(AND(subject=subjectFilter , date_gte=dx))
     liste = []
     i=0 
      
@@ -55,7 +59,6 @@ def mailparse(user , country):
         
         if country == Ingiltere or country ==Fransa : mail = BeautifulSoup(msg.html , 'html.parser').prettify()
         elif country == Almanya : mail = msg.text
-        print(mail)
 
         ##FROM 
         #ORDER İD 
