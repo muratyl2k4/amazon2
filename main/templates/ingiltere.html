@@ -11,7 +11,7 @@
       td {
         border: 5px solid #212529;
         text-align: center;
-        font-size: 20px;
+        font-size: 125%;
       }
       .my-custom-scrollbar {
       position: relative;
@@ -38,7 +38,7 @@
 
 
 <body class="bg-dark">
-    <h1 class="text-center fw-bold fs-1 text-white">İNGİLTERE MUHASEBE</h1>
+    <h1 class="text-center fw-bold fs-1 text-white">INGILTERE MUHASEBE</h1>
 
       <form class='d-flex flex-row-reverse' style="margin-right: 50px;" method = "POST" id= "deneme">
         {% csrf_token %}
@@ -139,7 +139,8 @@
             <th scope="col">ALICI SIPARIS NUMARASI </th>
             <th scope="col">SATIS FIYATI (GBP)</th>
             <th scope="col">AMAZON FEE (GBP)</th>
-            <th scope="col">ALIŞ FİYATI (USD) &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ARA DEPO MALİYETİ (GBP)</th>
+            <th scope="col">ALIŞ FİYATI (USD) </th>
+            <th>ARA DEPO MALİYETİ (GBP)</th>
             <th scope="col">KAR</th>
             <th scope="col">YUZDELIK KAR</th>
           </tr>
@@ -156,20 +157,23 @@
             <td>{{ x.ALICI_SIPARIS_NUMARASI }}</td>
             <td>{{ x.SATIS_FIYATI }}</td>
             <td>{{ x.AMAZON_FEE }}</td>
+            <form method = "POST" id={{ x.SATICI_SIPARIS_NUMARASI }}> 
+            {% csrf_token %} 
             <td >
-              <form method = "POST" id={{ x.SATICI_SIPARIS_NUMARASI }}> 
-                {% csrf_token %} 
                 <input type="hidden" class="form-control" name="order_id" value={{ x.SATICI_SIPARIS_NUMARASI }}>
-                <div class="row">
+               
                   <div class="col">
                     <input type="text" class="form-control" name="product_cost" value={{ x.MALIYET }}>
                   </div>
+                 
+                
+                </td>
+                <td>
                   <div class="col">
                     <input type="text" class="form-control" name="warehouse_cost" value={{ x.DEPO_MALIYET}}>
                   </div>
-                </div>
+                </td>
               </form>
-            </td>
             <td>{{ x.KAR }}</td>
             <td>{{ x.YUZDELIK_KAR }}</td>
             <td style="border-radius: 0px 10px 10px 0px;"><button name="update_cost" class="update btn btn-secondary" type="submit" form={{ x.SATICI_SIPARIS_NUMARASI }} value="Submit">GÜNCELLE</button></td>

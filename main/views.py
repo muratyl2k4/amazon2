@@ -25,16 +25,16 @@ def home(request):
 def dbdownload(request , country):
     now = datetime.now().strftime("%d_%m_%Y %H_%M_%S")
     
-    connection = sqlite3.connect("db.sqlite3")
+    connection = sqlite3.connect("amazon2/db.sqlite3")
     query = f"SELECT * FROM main_{country} where KULLANICI_ID = {request.user.id}"
     df = pd.read_sql(query, connection)
     filename= f"{country}_{now}.xlsx"
-    df.to_excel(f'main/static/{filename}')
+    df.to_excel(f'amazon2/main/static/{filename}')
      
-    db_path = f'main\static\{filename}'
+    db_path = f'amazon2/main/static/{filename}'
     dbfile = File(open(db_path, "rb"))
     response = HttpResponse(dbfile)
-    response['Content-Disposition'] = 'attachment; filename=%s' % db_path
+    response['Content-Disposition'] = 'attachment; filename=%s' % filename
     response['Content-Length'] = dbfile.size
 
     return response
