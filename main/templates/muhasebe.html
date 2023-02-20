@@ -33,9 +33,9 @@
         <div class="content">
           <h2>{{i.0}}</h2>
           
-          <p class="fs-5 mt-5">Toplam Kazanç : {{i.3|floatformat:0}}</p>
-          <p class="fs-5">Toplam Kar : {{i.4|floatformat:0}}</p>
-          <p class="fs-5">Toplam Maliyet : {{i.5|floatformat:0}}</p>
+          <p class="fs-5 mt-5">Toplam Kazanç : {{i.3|floatformat:2}}</p>
+          <p class="fs-5">Toplam Kar : {{i.4|floatformat:2}}</p>
+          <p class="fs-5">Toplam Maliyet : {{i.5|floatformat:2}}</p>
           <a href="{{i.2}}">SATIŞLAR</a>
         </div>
       </div>
@@ -94,6 +94,13 @@
       </div>
     </div>
   </form>
+  
+  {% for message in messages%}
+  <script>
+    alert('{{ message }}');
+  </script>
+                 {% endfor %}
+                 
       
       
 
