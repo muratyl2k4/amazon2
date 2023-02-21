@@ -1,5 +1,6 @@
 from .models import Order
 import pandas as pd 
+
 from .courier_code import courier_code
 from operator import countOf
 def common_member(a, b):
@@ -22,7 +23,8 @@ def uploaded_file(file , data):
         try: 
             track = Order.objects.get(AmazonOrderId= fileAmazonOrderId[index[0]])
             if track.Tracknumber == None: track.Tracknumber = trackingID[index[0]] if trackingID[index[0]] is not None else None
-            if track.Courier_Name == None: track.Courier_Name = courier_code(carrier[index[0]]) if carrier[index[0]] is not None else None              
+            if track.Tracknumber2 == None and track.Tracknumber != trackingID[index[0]] : track.Tracknumber2 = trackingID[index[0]] if trackingID[index[0]] is not None else None
+            if track.Courier_Name == None or track.Courier_Name != courier_code(carrier[index[0]]): track.Courier_Name = courier_code(carrier[index[0]]) if carrier[index[0]] is not None else None              
             track.save()            
         except Order.DoesNotExist:
             track = Order(

@@ -3,7 +3,7 @@ from .trackApi import TrackingApi
 from datetime import datetime 
 import json
 def order_track(apiKey):
-    
+    ###TODO 15 gun
     tracker = TrackingApi(apiKey)
     tracker.sandbox = False
     order_info_list = []
@@ -11,7 +11,7 @@ def order_track(apiKey):
     post = []
     for ord in Orders:
         try : 
-            tracknumber = ord.get('Tracknumber')
+            tracknumber = ord.get('Tracknumber') if ord.get('Tracknumber2') == None else ord.get('Tracknumber2')
             courier_code = ord.get('Courier_Name')
             post.append({"tracking_number": tracknumber , "courier_code": courier_code})
             postData = json.dumps(post)
@@ -28,7 +28,6 @@ def order_track(apiKey):
             delivery_status = data.get('delivery_status').upper()
             order = Order.objects.get(Tracknumber = tracknumber)
             if order.Last_Status == None or order.Last_Status != 'DELIVERED' : order.Last_Status = 'Tracking in Progress...'
-            order.save()
             ## LAST CHECKPOINT TIME
             last_cp_time = data.get('lastest_checkpoint_time')
             ##DATETIME
@@ -43,12 +42,16 @@ def order_track(apiKey):
             elif passing_time.total_seconds() > 3600 and passing_time.total_seconds() < 86400: lastupdate = int(passing_time.total_seconds() /3600) + "Saat"
             elif passing_time.total_seconds() >= 86400: lastupdate = f"{int(passing_time.total_seconds() / 86400)} Gün"
             ##SON DURUM - KART RENGI 
-            if delivery_status.lower() == "delivered": bg = "bg-success"
-            elif int(passing_time.total_seconds() /86400)>= 2 : bg = "bg-warning"
-            else: bg = "bg-primary"
+            if delivery_status.lower() == "delivered": status = "success"
+            elif int(passing_time.total_seconds() /86400)>= 2 : status = "warning"
+            elif int(passing_time.total_seconds() /86400)>= 5 : status = "danger"
+            else: status = "primary"
+            order.Status = status
+            order.save()
             ##LINK 
             if courier_code == 'hermes-uk' : weblink = f'https://www.evri.com/track/parcel/{tracknumber}/details'
-            informations = {"Tracknumber" : tracknumber , "Status" : delivery_status , "Time" : time , "Location" :  None , "Date" : date , "lastupdate" : lastupdate , "bg" : bg , 'weblink' : weblink}
+            else : weblink = f'https://parcelsapp.com/en/tracking/{tracknumber}'
+            informations = {"OrderID" : order.AmazonOrderId, "Tracknumber" : tracknumber , "Status" : delivery_status , "Time" : time , "Location" :  None , "Date" : date , "lastupdate" : lastupdate , 'bg' : status ,  'weblink' : weblink}
             order_info_list.append(informations)
         except Exception as e: 
             print('KARGO TAKIP HATASI : ', ord , e)
