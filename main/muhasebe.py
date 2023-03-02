@@ -113,7 +113,7 @@ def mailparse(user , country , email , apppassword , fdate):
             try :
                 b = country(
                     KULLANICI = user, 
-                    SATICI_SIPARIS_NUMARASI = oi[0:len(oi)],
+                    SATICI_SIPARIS_NUMARASI = oi[0:19],
                     SATIS_FIYATI  = float(prc.replace(f"{rCurrency}" , "").replace(',' , '.')[0:len(prc)-1]),
                     AMAZON_FEE  = float(afee.replace(f"{rCurrency}" , "").replace(',' , '.')[0:len(afee)-1]),
                     TARIH = datetime_object,

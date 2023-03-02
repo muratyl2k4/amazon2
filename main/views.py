@@ -143,6 +143,8 @@ def ingiltere(request):
                 try:
                     update_cost(Ingiltere,o_id, p_cost, w_cost)
                     update_profit(Ingiltere,o_id , currency1='GBP')
+                    return HttpResponseRedirect('../ingiltere')
+
                 
                 except:
                     message = "Maliyet 0 Olamaz"
@@ -157,6 +159,8 @@ def ingiltere(request):
                 mailparse(country=Ingiltere,user = request.user , email=pazarlar.UKMAIL , apppassword=pazarlar.UKPASSWORD , fdate=request.POST['date'])
             else:
                 mailparse(country=Ingiltere,user = request.user , email=pazarlar.UKMAIL , apppassword=pazarlar.UKPASSWORD , fdate=None)
+            return HttpResponseRedirect('../ingiltere')
+
     else:
         print("no form posted")
         form = UploadFileForm()
@@ -171,6 +175,7 @@ def almanya(request):
     pazarlar = Pazarlar.objects.get(KULLANICI = request.user)
     b = Almanya.objects.filter(KULLANICI = request.user)    
     d = reversed(b)
+
     form = UploadFileForm(request.POST, request.FILES)
     maliyet_form = MALIYET(request.POST) 
     
@@ -179,7 +184,6 @@ def almanya(request):
             "info" : d ,
             'len' : len(b),
             "form" : form , 
-            
             }
         
     if request.method == 'POST':
@@ -187,8 +191,8 @@ def almanya(request):
         if 'load_excel' in request.POST:
             print("load excel")
             if form.is_valid():
-                handle_uploaded_file(request.FILES['file'] , d)
-                updated_d = Almanya.objects.filter(KULLANICI = request.user)
+                handle_uploaded_file(f = request.FILES['file'] , data=Almanya)
+                updated_d = reversed(Almanya.objects.filter(KULLANICI = request.user))
                 data = {
                 "info" : updated_d,
                 'form' : form,
@@ -200,29 +204,33 @@ def almanya(request):
                 p_cost = maliyet_form.data['product_cost']
                 w_cost = maliyet_form.data['warehouse_cost']
                 o_id = maliyet_form.data['order_id']
-                try:
-                    update_cost(Almanya,o_id, p_cost, w_cost)
-                    update_profit(Almanya,o_id , currency1='EUR')
+ 
+                update_cost(Almanya,o_id, p_cost, w_cost)
+                update_profit(Almanya,o_id , 'EUR')
+                return HttpResponseRedirect('../almanya')
                 
-                except:
-                    message = "Maliyet 0 Olamaz"
+                """                    message = "Maliyet 0 Olamaz"
                     data = {
                     "info" : d,
                     'form' : form,
                     'message' : message
                     }
+                """
+
 
         elif 'update_order_list' in request.POST:
             if len(b) == 0 : 
-                mailparse(country=Almanya,user = request.user , email=pazarlar.DEMAIL , apppassword=pazarlar.DEPASSWORD , fdate=request.POST['date'])
+                mailparse(country=Almanya,user = request.user , email=pazarlar.FRMAIL , apppassword=pazarlar.FRPASSWORD , fdate=request.POST['date'])
             else:
-                mailparse(country=Almanya,user = request.user , email=pazarlar.DEMAIL , apppassword=pazarlar.DEPASSWORD , fdate=None)
+                mailparse(country=Almanya,user = request.user , email=pazarlar.FRMAIL , apppassword=pazarlar.FRPASSWORD , fdate=None)
+            
+            return HttpResponseRedirect('../almanya')
     else:
         print("no form posted")
         form = UploadFileForm()
 
     
-    return render(request , 'almanya.html' , data) 
+    return render(request , 'almanya.html' , data)
 
 @login_required(login_url='login')
 def fransa(request):
@@ -290,9 +298,9 @@ def fransa(request):
     return render(request , 'fransa.html' , data) 
 
 
-from currency_converter.currency_converter import CurrencyConverter
 
 def update_cost(country,order_id,product_cost,warehouse_cost):
+    print('a' + order_id + 'a')
     order = country.objects.get(SATICI_SIPARIS_NUMARASI = order_id)
     print(order)
     order.MALIYET = product_cost
