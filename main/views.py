@@ -11,9 +11,11 @@ from django.http.response import HttpResponse
 from django.http import HttpResponseRedirect
 from datetime import datetime
 from django.contrib.auth.decorators import login_required
-from currency_converter.currency_converter import CurrencyConverter
 from django.contrib import messages
 from imap_tools import MailBox
+from google_currency import convert
+import json
+
 
 
 
@@ -41,7 +43,13 @@ def dbdownload(request , country):
 
 @login_required(login_url='login')
 def muhasebe(request):
-     
+    global eur_to_usd 
+    global gbp_to_usd
+    temp = json.loads(convert('eur','usd',100))
+    eur_to_usd = float(temp['amount'])/100
+    temp2 = json.loads(convert('gbp','usd',100))
+    gbp_to_usd = float(temp2['amount'])/100
+    
     pazarlar = Pazarlar.objects.get(KULLANICI = request.user)
     print(pazarlar)
     if request.method == 'POST':
@@ -69,7 +77,7 @@ def muhasebe(request):
             print(e)
         
     
-    c = CurrencyConverter()
+    #c = CurrencyConverter()
     #pdict = {'pazarlar' : pazarlar.EN}
     #keys = [i for i in pdict.keys()]
     fr = Fransa.objects.filter(KULLANICI = request.user)
@@ -78,7 +86,8 @@ def muhasebe(request):
     frProfit = sum([i.KAR for i in fr if i.KAR is not None])
     frAmazonMaliyet = sum([i.MALIYET for i in fr])
     frDepoMaliyet = sum([i.DEPO_MALIYET for i in fr])
-    frMaliyet = frAmazonMaliyet + c.convert(frDepoMaliyet , 'EUR' , 'USD')
+    frMaliyet = 0
+    #frAmazonMaliyet + convert('eur','usd',frDepoMaliyet)
     
     de = Almanya.objects.filter(KULLANICI = request.user)
     deSatis = sum([i.SATIS_FIYATI for i in de])
@@ -86,7 +95,8 @@ def muhasebe(request):
     deProfit = sum([i.KAR for i in de if i.KAR is not None])
     deAmazonMaliyet = sum([i.MALIYET for i in de])
     deDepoMaliyet = sum([i.DEPO_MALIYET for i in de])
-    deMaliyet = deAmazonMaliyet + c.convert(deDepoMaliyet , 'EUR' , 'USD')
+    deMaliyet = 0
+    #deAmazonMaliyet + convert('eur','usd',deDepoMaliyet)
     
     uk = Ingiltere.objects.filter(KULLANICI = request.user)
     ukSatis = sum([i.SATIS_FIYATI for i in uk])
@@ -94,7 +104,8 @@ def muhasebe(request):
     ukProfit = sum([i.KAR for i in uk if i.KAR is not None])
     ukAmazonMaliyet = sum([i.MALIYET for i in uk])
     ukDepoMaliyet = sum([i.DEPO_MALIYET for i in uk])
-    ukMaliyet = ukAmazonMaliyet + c.convert(ukDepoMaliyet , 'GBP' , 'USD')
+    ukMaliyet = 0
+    #ukAmazonMaliyet + convert('gbp','usd',ukDepoMaliyet)
 
 
     
@@ -142,11 +153,10 @@ def ingiltere(request):
                 o_id = maliyet_form.data['order_id']
                 try:
                     update_cost(Ingiltere,o_id, p_cost, w_cost)
-                    update_profit(Ingiltere,o_id , currency1='GBP')
+                    update_profit(Ingiltere,o_id ,'GBP')
                     return HttpResponseRedirect('../ingiltere')
-
                 
-                except:
+                except :
                     message = "Maliyet 0 Olamaz"
                     data = {
                     "info" : d,
@@ -205,17 +215,18 @@ def almanya(request):
                 w_cost = maliyet_form.data['warehouse_cost']
                 o_id = maliyet_form.data['order_id']
  
+            try :
                 update_cost(Almanya,o_id, p_cost, w_cost)
                 update_profit(Almanya,o_id , 'EUR')
                 return HttpResponseRedirect('../almanya')
-                
-                """                    message = "Maliyet 0 Olamaz"
-                    data = {
-                    "info" : d,
-                    'form' : form,
-                    'message' : message
-                    }
-                """
+
+            except :                
+                message = "Maliyet 0 Olamaz"
+                data = {
+                "info" : d,
+                'form' : form,
+                'message' : message
+                }
 
 
         elif 'update_order_list' in request.POST:
@@ -267,20 +278,19 @@ def fransa(request):
                 p_cost = maliyet_form.data['product_cost']
                 w_cost = maliyet_form.data['warehouse_cost']
                 o_id = maliyet_form.data['order_id']
-
-                
                     
+            try :
                 update_cost(Fransa,o_id, p_cost, w_cost)
                 update_profit(Fransa,o_id , 'EUR')
                 return HttpResponseRedirect('../fransa')
-                
-                """                    message = "Maliyet 0 Olamaz"
-                    data = {
-                    "info" : d,
-                    'form' : form,
-                    'message' : message
-                    }
-                """
+
+            except :
+                message = "Maliyet 0 Olamaz"
+                data = {
+                "info" : d,
+                'form' : form,
+                'message' : message
+                }
 
 
         elif 'update_order_list' in request.POST:
@@ -307,17 +317,20 @@ def update_cost(country,order_id,product_cost,warehouse_cost):
     order.DEPO_MALIYET = warehouse_cost
     order.save()     
 
-def update_profit(country,order_id , currency1):
+ 
+
+
+def update_profit(country,order_id , currency_type):
     order = country.objects.get(SATICI_SIPARIS_NUMARASI = order_id)
-    c = CurrencyConverter()
-    profit = round(c.convert(order.SATIS_FIYATI - order.AMAZON_FEE - order.DEPO_MALIYET , currency1 , 'USD') - order.MALIYET , 2)
-    order.KAR = profit
-    order.YUZDELIK_KAR = round(order.KAR / (order.MALIYET + c.convert(order.DEPO_MALIYET , currency1 , 'USD') ),2)
+    currency = eur_to_usd if currency_type == 'EUR' else gbp_to_usd
+    profit = (order.SATIS_FIYATI - order.AMAZON_FEE - order.DEPO_MALIYET) * currency - order.MALIYET
+    print('currr', currency)
+    print('profit', profit)
+    order.KAR = round(profit,2)
+    order.YUZDELIK_KAR = round(order.KAR / (order.MALIYET + order.DEPO_MALIYET*currency),3)
     order.save()
 
 
-
-    
 
 def pl(request):
     return render(request , 'pl.html') 
