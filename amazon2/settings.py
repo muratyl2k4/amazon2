@@ -31,6 +31,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    "remote" , 
     "order_track",
     "accounts",
     "main",
@@ -80,7 +81,14 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
-    }
+    },
+    "mysql": {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'jaylee54$deneme',
+        'USER': 'jaylee54',
+        'PASSWORD': 'muratyl1A',
+        'HOST': 'jaylee54.mysql.pythonanywhere-services.com',
+    },
 }
 
 
