@@ -31,7 +31,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    "remote" , 
+    "remote.apps.RemoteConfig" , 
     "order_track",
     "accounts",
     "main",
@@ -78,10 +78,13 @@ WSGI_APPLICATION = "amazon2.wsgi.application"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {
+    "default": {    
+    },
+    "sqlite" : {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
-    },
+    }
+    ,
     "mysql": {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'jaylee54$deneme',
@@ -90,6 +93,16 @@ DATABASES = {
         'HOST': 'jaylee54.mysql.pythonanywhere-services.com',
     },
 }
+'''
+    "mysql": {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'jaylee54$deneme',
+        'USER': 'jaylee54',
+        'PASSWORD': 'muratyl1A',
+        'HOST': 'jaylee54.mysql.pythonanywhere-services.com',
+    },
+'''
+DATABASE_ROUTERS = ["routers.db_routers.sqLiteRouter" , "routers.db_routers.mySQLRouter"]       
 
 
 # Password validation

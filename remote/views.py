@@ -1,7 +1,7 @@
 from django.shortcuts import render
-
 # Create your views here.
 def upload(request):
+   
     if request.method == 'POST':
         if 'scan_asin' in request.POST:
             pass
