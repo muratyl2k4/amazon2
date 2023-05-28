@@ -32,9 +32,9 @@ ALLOWED_HOSTS = ['*']
 
 INSTALLED_APPS = [
     "remote.apps.RemoteConfig" , 
-    "order_track",
-    "accounts",
-    "main",
+    "order_track.apps.OrderTrackConfig",
+    "accounts.apps.AccountConfig",
+    "main.apps.MainConfig",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
