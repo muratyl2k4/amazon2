@@ -11,7 +11,7 @@ class sqLiteRouter:
         Attempts to read auth and contenttypes models go to auth_db.
         """
         if model._meta.app_label in self.route_app_labels:
-            return "sqlite"
+            return "default"
         return None
 
     def db_for_write(self, model, **hints):
@@ -19,7 +19,7 @@ class sqLiteRouter:
         Attempts to write auth and contenttypes models go to second.
         """
         if model._meta.app_label in self.route_app_labels:
-            return "sqlite"
+            return "default"
         return None
 
     def allow_relation(self, obj1, obj2, **hints):
@@ -40,7 +40,7 @@ class sqLiteRouter:
         'second' database.
         """
         if app_label in self.route_app_labels:
-            return db == "sqlite"
+            return db == "default"
         return None
 
 class mySQLRouter:

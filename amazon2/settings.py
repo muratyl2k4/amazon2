@@ -33,7 +33,7 @@ ALLOWED_HOSTS = ['*']
 INSTALLED_APPS = [
     "remote.apps.RemoteConfig" , 
     "order_track.apps.OrderTrackConfig",
-    "accounts.apps.AccountConfig",
+    "accounts.apps.AccountsConfig",
     "main.apps.MainConfig",
     "django.contrib.admin",
     "django.contrib.auth",
@@ -78,9 +78,8 @@ WSGI_APPLICATION = "amazon2.wsgi.application"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {    
-    },
-    "sqlite" : {
+   
+    "default" : {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
