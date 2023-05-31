@@ -1,6 +1,6 @@
 from django.urls import path 
-from .views import upload
-
+from .views import fbaHomePage , fbaMarketPage
 urlpatterns = [
-    path("uploadfile" , upload)
+    path("fba" , fbaHomePage),
+    path("fba/<str:country>" , fbaMarketPage)
 ]
