@@ -2,8 +2,9 @@ import pandas as pd
 from .models import *
 from datetime import datetime
 def keepa_excel(com_file , target_file , keepa_db , completed_db , notCompleted_db , user):
-    com_pd_file =pd.read_excel(com_file)
-    target_pd_file = pd.read_excel(target_file)
+    com_pd_file =pd.read_excel(com_file)[['Title','ASIN','Buy Box: Current','New: Current','New, 3rd Party FBA: Current','New, 3rd Party FBM: Current']]
+    target_pd_file = pd.read_excel(target_file)[['ASIN','Sales Rank: Current','Sales Rank: Drops last 30 days','Buy Box: Current','New: Current','New, 3rd Party FBA: Current','New, 3rd Party FBM: Current','Referral Fee %','FBA Fees:']]
+
     df = pd.merge(com_pd_file, target_pd_file, on="ASIN")    
     
     try: 
@@ -90,6 +91,6 @@ def keepa_excel(com_file , target_file , keepa_db , completed_db , notCompleted_
                     dataSaver(asin = Asins[asin])
                 except:
                     dataSaver(asin=Asins[asin])            
-    except:
-        return 'Dosyalari kontrol edin'
+    except Exception as e:
+        print(e)
 

@@ -31,8 +31,8 @@ def fbaMarketPage(request,country):
         'de' : [CompletedDE , NotCompletedDE , KeepaExcelDE],
     } 
     completedDatas = switchCase[country][0]
-    keepaExcelDatas = switchCase[country][2]
     notCompletedDatas = switchCase[country][1]
+    keepaExcelDatas = switchCase[country][2]
     if request.method == 'POST':
         if 'asin_text_upload' in request.POST:
             asins = request.POST['asintext'].split('\n')
