@@ -47,8 +47,8 @@ def fbaMarketPage(request,country):
                     except:
                         print(asin , 'failed')        
         elif 'asin_file_upload' in request.POST:
-            keepa_excel(com_file=request.FILES['com_asin'] ,
-                         target_file=request.FILES['target_asin'] ,
+            keepa_excel(com_file=request.FILES.get('com_asin') ,
+                         target_file=request.FILES('target_asin') ,
                            completed_db=completedDatas 
                         , notCompleted_db=notCompletedDatas,
                           keepa_db=keepaExcelDatas  )
