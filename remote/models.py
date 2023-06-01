@@ -176,3 +176,9 @@ class KeepaExcelDE(KeepaExcelAbstract):
             if f.attname == "parent_field":
                 f.default = "child default"
         super(KeepaExcelDE, self).__init__(*args, **kwargs)
+
+
+class excelData(models.Model):
+    com_asin = models.FileField(upload_to='attachment/%Y/%m/%d')
+    target_asin = models.FileField(upload_to='attachment/%Y/%m/%d')
+    

@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from .models import *
 from .fileupload import keepa_excel
+from .forms import UploadFileForm
 # Create your views here.
 
 switchCase = {}
@@ -19,6 +20,8 @@ def fbaMarketPage(request,country):
     notCompletedDatas = None
     keepaExcelDatas = None
     '''
+    form = UploadFileForm(request.POST, request.FILES)
+
     switchCase = {
         'fr' : [CompletedFR , NotCompletedFR , KeepaExcelFR],
         'uk' : [CompletedUK , NotCompletedUK , KeepaExcelUK],
@@ -44,12 +47,12 @@ def fbaMarketPage(request,country):
                     except:
                         print(asin , 'failed')        
         elif 'asin_file_upload' in request.POST:
-            keepa_excel(com_file=request.FILE['com_asin'] ,
-                         target_file=request.FILE['target_asin'] ,
+            keepa_excel(com_file=request.FILES['com_asin'] ,
+                         target_file=request.FILES['target_asin'] ,
                            completed_db=completedDatas 
                         , notCompleted_db=notCompletedDatas,
                           keepa_db=keepaExcelDatas  )
         elif 'download_asin' in request.POST:
             pass
 
-    return render(request,'fbamarket.html')
+    return render(request,'fbamarket.html' , {'form' : form})
