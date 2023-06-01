@@ -11,10 +11,7 @@ class CompletedAbstract(models.Model):
     SalesRank = models.IntegerField(blank=True,null=True)
     Drop_Count = models.IntegerField(blank=True,null=True)
     Buy_Price = models.FloatField(blank=True,null=True)
-    Sale_Price_BB = models.FloatField(blank=True,null=True)
-    Sale_Price_FBM = models.FloatField(blank=True,null=True)
-    Sale_Price_FBA= models.FloatField(blank=True,null=True)
-    Sale_Price_NC = models.FloatField(blank=True,null=True)
+    Sale_Price = models.FloatField(blank=True,null=True)
     Ratio = models.FloatField(blank=True,null=True)
     Cost = models.FloatField(blank=True,null=True)
     Profit = models.FloatField(blank=True,null=True)
@@ -24,7 +21,6 @@ class CompletedAbstract(models.Model):
     Fba_Seller_Count = models.IntegerField(blank=True,null=True)
     Is_Buybox_Fba = models.BooleanField(default = False ,blank=True,null=True)
     Is_Amazon_Selling = models.BooleanField(default=False ,blank=True,null=True)
-
     class Meta:
         abstract = True
     def __str__(self):
@@ -42,12 +38,18 @@ class KeepaExcelAbstract(models.Model):
     SalesRank = models.IntegerField(blank=True,null=True)
     Drop_Count = models.IntegerField(blank=True,null=True) 
     #com
-    Buy_Price = models.FloatField(blank=True,null=True)
+    Buy_Price_FBA = models.FloatField(blank=True,null=True)
+    Buy_Price_BB = models.FloatField(blank=True,null=True)
+    Buy_Price_FBM = models.FloatField(blank=True,null=True)
+    Buy_Price_NC = models.FloatField(blank=True,null=True)
     #hedef
     Sale_Price_NC = models.FloatField(blank=True , null=True)
     Sale_Price_BB = models.FloatField(blank=True,null=True)
     Sale_Price_FBM = models.FloatField(blank=True,null=True)
     Sale_Price_FBA= models.FloatField(blank=True,null=True) 
+    Referral_Fee_Percentage = models.FloatField(null=True , blank=True)
+    Pick_and_Pack_Fee = models.FloatField(null=True , blank=True)
+    
     class Meta:
         abstract = True
 
