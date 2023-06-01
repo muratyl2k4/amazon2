@@ -70,7 +70,8 @@ def keepa_excel(com_file , target_file , keepa_db , completed_db , notCompleted_
                 new = completed_db(User = user , Asin = Asins[asin])
                 new.save(using='mysql')
                 
-        for asin in len(Asins):
+        for asin in range(len(Asins)):
+            asin = int(asin)
             try:
                 check = completed_db.objects.get(Asin= Asins[asin] , Referral_Fee_Percentage= Referral_Fee_Percentages[asin])
                 check2nd = datetime.now() - check.Date      
@@ -88,9 +89,9 @@ def keepa_excel(com_file , target_file , keepa_db , completed_db , notCompleted_
                 try:
                     data = notCompleted_db.objects.get(Asin = Asins[asin])
                     data.delete()
-                    dataSaver(asin = Asins[asin])
+                    dataSaver(asin = asin)
                 except:
-                    dataSaver(asin=Asins[asin])            
+                    dataSaver(asin=asin)            
     except Exception as e:
         print(e)
 

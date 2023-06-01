@@ -50,6 +50,8 @@ class KeepaExcelAbstract(models.Model):
     Referral_Fee_Percentage = models.FloatField(null=True , blank=True)
     Pick_and_Pack_Fee = models.FloatField(null=True , blank=True)
     
+    def __str__(self):
+        return self.Asin
     class Meta:
         abstract = True
 
