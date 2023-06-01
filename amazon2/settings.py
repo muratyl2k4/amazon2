@@ -89,9 +89,9 @@ DATABASES = {
         'NAME': 'jaylee54$deneme',
         'USER': 'jaylee54',
         'PASSWORD': 'muratyl1A',
-        'HOST': 'jaylee54.mysql.pythonanywhere-services.com',
-    },
+        'HOST': 'jaylee54.mysql.pythonanywhere-services.com'
 }
+    }
 '''
     "mysql": {
         'ENGINE': 'django.db.backends.mysql',
@@ -101,6 +101,7 @@ DATABASES = {
         'HOST': 'jaylee54.mysql.pythonanywhere-services.com',
     },
 '''
+#DATABASE_ROUTERS = ["routers.db_routers.sqLiteRouter"]
 DATABASE_ROUTERS = ["routers.db_routers.sqLiteRouter" , "routers.db_routers.mySQLRouter"]       
 
 

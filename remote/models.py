@@ -20,7 +20,7 @@ class CompletedAbstract(models.Model):
     Profit = models.FloatField(blank=True,null=True)
     Profit_Percentage = models.FloatField(blank=True,null=True)
     Sales_Info = models.IntegerField(blank=True,null=True)
-    Date = models.DateField(blank=True,null=True)
+    Date = models.DateTimeField(blank=True,null=True)
     Fba_Seller_Count = models.IntegerField(blank=True,null=True)
     Is_Buybox_Fba = models.BooleanField(default = False ,blank=True,null=True)
     Is_Amazon_Selling = models.BooleanField(default=False ,blank=True,null=True)
@@ -47,9 +47,7 @@ class KeepaExcelAbstract(models.Model):
     Sale_Price_NC = models.FloatField(blank=True , null=True)
     Sale_Price_BB = models.FloatField(blank=True,null=True)
     Sale_Price_FBM = models.FloatField(blank=True,null=True)
-    Sale_Price_FBA= models.FloatField(blank=True,null=True)
-    #hedefusd/com
-    Ratio = models.FloatField(blank=True,null=True) 
+    Sale_Price_FBA= models.FloatField(blank=True,null=True) 
     class Meta:
         abstract = True
 

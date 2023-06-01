@@ -1,6 +1,11 @@
 from django.shortcuts import render
 from .models import *
+from .fileupload import keepa_excel
 # Create your views here.
+
+switchCase = {}
+
+
 def fbaHomePage(request):
     countries = ['uk','ca','ja','au','fr','de']
     data = {
@@ -9,6 +14,10 @@ def fbaHomePage(request):
     return render(request,'fbahome.html' , data)
 
 def fbaMarketPage(request,country):
+    '''
+    completedDatas = None
+    notCompletedDatas = None
+    keepaExcelDatas = None
     '''
     switchCase = {
         'fr' : [CompletedFR , NotCompletedFR , KeepaExcelFR],
@@ -19,13 +28,8 @@ def fbaMarketPage(request,country):
         'de' : [CompletedDE , NotCompletedDE , KeepaExcelDE],
     } 
     completedDatas = switchCase[country][0]
-    notCompletedDatas = switchCase[country][1]
     keepaExcelDatas = switchCase[country][2]
-    '''
-    switchCase = {}
-    completedDatas = None
-    notCompletedDatas = None
-    keepaExcelDatas = None
+    notCompletedDatas = switchCase[country][1]
     if request.method == 'POST':
         if 'asin_text_upload' in request.POST:
             asins = request.POST['asintext'].split('\n')
@@ -40,7 +44,11 @@ def fbaMarketPage(request,country):
                     except:
                         print(asin , 'failed')        
         elif 'asin_file_upload' in request.POST:
-            pass
+            keepa_excel(com_file=request.FILE['com_asin'] ,
+                         target_file=request.FILE['target_asin'] ,
+                           completed_db=completedDatas 
+                        , notCompleted_db=notCompletedDatas,
+                          keepa_db=keepaExcelDatas  )
         elif 'download_asin' in request.POST:
             pass
 
