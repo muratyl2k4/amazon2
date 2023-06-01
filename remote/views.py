@@ -48,10 +48,11 @@ def fbaMarketPage(request,country):
                         print(asin , 'failed')        
         elif 'asin_file_upload' in request.POST:
             keepa_excel(com_file=request.FILES.get('com_asin') ,
-                         target_file=request.FILES('target_asin') ,
+                         target_file=request.FILES.get('target_asin') ,
                            completed_db=completedDatas 
                         , notCompleted_db=notCompletedDatas,
-                          keepa_db=keepaExcelDatas  )
+                          keepa_db=keepaExcelDatas ,
+                           user = request.user )
         elif 'download_asin' in request.POST:
             pass
 

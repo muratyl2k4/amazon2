@@ -25,7 +25,7 @@ def keepa_excel(com_file , target_file , keepa_db , completed_db , notCompleted_
                     check = completed_db.objects.get(User = user , Asin = Asins[asin])
                 except:
                     new = completed_db(User = user , Asin = Asins[asin])
-                    new.save()                    
+                    new.save(using='mysql')                    
             except:
                 data = keepa_db(Asin = Asins[asin] , 
                     Title = Titles[asin],
@@ -37,9 +37,9 @@ def keepa_excel(com_file , target_file , keepa_db , completed_db , notCompleted_
                     Sale_Price_FBM = sale_price_FBM_list[asin],
                     Sale_Price_FBA = sale_price_FBA_list[asin],
                     )
-                data.save()
+                data.save(using='mysql')
                 new = completed_db(User = user , Asin = Asins[asin])
-                new.save()
+                new.save(using='mysql')
                 
         for asin in len(Asins):
             try:
@@ -53,7 +53,7 @@ def keepa_excel(com_file , target_file , keepa_db , completed_db , notCompleted_
                         #test edilecek 
                         data = check
                         data.User = user
-                        data.save()                         
+                        data.save(using='mysql')                         
             except:
                 try:
                     data = notCompleted_db.objects.get(Asin = Asins[asin])
