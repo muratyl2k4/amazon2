@@ -33,7 +33,10 @@ def fbaMarketPage(request,country):
     completedDatas = switchCase[country][0]
     notCompletedDatas = switchCase[country][1]
     keepaExcelDatas = switchCase[country][2]
+
+    
     if request.method == 'POST':
+        
         if 'asin_text_upload' in request.POST:
             asins = request.POST['asintext'].split('\n')
             for asin in asins:
@@ -43,7 +46,8 @@ def fbaMarketPage(request,country):
                     notCompletedDatas.objects.get(Asin = asin)
                 except:
                     try: 
-                        notCompletedDatas(User = request.user , Asin = asin)
+                        product = notCompletedDatas(User = request.user , Asin = asin)
+                        product.save()
                     except:
                         print(asin , 'failed')        
         elif 'asin_file_upload' in request.POST:
@@ -53,7 +57,45 @@ def fbaMarketPage(request,country):
                         , notCompleted_db=notCompletedDatas,
                           keepa_db=keepaExcelDatas ,
                            user = request.user )
-        elif 'download_asin' in request.POST:
-            pass
+        elif 'asin_link_upload' in request.POST:
+            product = StoreLink(User = request.user ,
+                                Link = request.POST['storelink'],
+                                 Marketplace = country)                
+            product.save()
+        elif 'send_pool' in request.POST:
+            asin_list = request.POST.getlist('poolCheckBox')
+            for asin in asin_list:
+                product_to_pool =completedDatas.objects.get(User = request.user , Asin=asin) 
+                product_to_pool.Pool = True
+                product_to_pool.save()
 
-    return render(request,'fbamarket.html' , {'form' : form})
+    return render(request,'fbamarket.html' , {'form' : form ,
+                                              'asins' : completedDatas.objects.filter(User=request.user),
+                                              'country':[country.upper()]})
+
+
+def fbaMarketPoolPage(request,country):
+    switchCase = {
+        'fr' : [CompletedFR],
+        'uk' : [CompletedUK],
+        'ca' : [CompletedCA],
+        'ja' : [CompletedJA],
+        'au' : [CompletedAU],
+        'de' : [CompletedDE],
+    } 
+    form = UploadFileForm(request.POST, request.FILES)
+    completedDatas = switchCase[country]
+    poolDatas = completedDatas.objects.get(User = request.user , Pool = True)
+    if request.method == 'POST':
+        if 'send_pool' in request.POST:
+            asin_list = request.POST.getlist('poolCheckBox')
+            for asin in asin_list:
+                product_to_pool =completedDatas.objects.get(User = request.user , Asin=asin) 
+                product_to_pool.Pool = False
+                product_to_pool.save()
+    data = {
+        'asins' : poolDatas ,
+        'form' : form ,
+        'country' : [country.upper()]
+    }
+    return render(request,'fbamarketpool.html' , data)

@@ -4,6 +4,12 @@ from django.contrib.auth.models import User
 #TODO
 #comda yoksa sadece asin
 #buy?sale stok yok gec
+
+class StoreLink(models.Model):
+    User = models.ForeignKey(User , blank=True , null=True , on_delete = models.CASCADE)
+    Link = models.CharField(max_length=500 , null=True , blank=True)
+    Marketplace = models.CharField(max_length=5 , null=True,blank=True)
+        
 class CompletedAbstract(models.Model):
     User = models.ForeignKey(User , blank=True , null=True , on_delete = models.CASCADE)
     Title= models.CharField(max_length=100,blank=True,null=True)
@@ -21,6 +27,7 @@ class CompletedAbstract(models.Model):
     Fba_Seller_Count = models.IntegerField(blank=True,null=True)
     Is_Buybox_Fba = models.BooleanField(default = False ,blank=True,null=True)
     Is_Amazon_Selling = models.BooleanField(default=False ,blank=True,null=True)
+    Pool = models.BooleanField(default=False ,blank=True,null=True)
     class Meta:
         abstract = True
     def __str__(self):
