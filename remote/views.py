@@ -16,12 +16,6 @@ def fbaHomePage(request):
 
 def fbaMarketPage(request,country):
     '''
-    completedDatas = None
-    notCompletedDatas = None
-    keepaExcelDatas = None
-    '''
-    form = UploadFileForm(request.POST, request.FILES)
-
     switchCase = {
         'fr' : [CompletedFR , NotCompletedFR , KeepaExcelFR],
         'uk' : [CompletedUK , NotCompletedUK , KeepaExcelUK],
@@ -33,6 +27,12 @@ def fbaMarketPage(request,country):
     completedDatas = switchCase[country][0]
     notCompletedDatas = switchCase[country][1]
     keepaExcelDatas = switchCase[country][2]
+    '''
+    form = UploadFileForm(request.POST, request.FILES)
+
+    completedDatas = None
+    notCompletedDatas = None
+    keepaExcelDatas = None
 
     
     if request.method == 'POST':
@@ -70,11 +70,12 @@ def fbaMarketPage(request,country):
                 product_to_pool.save()
 
     return render(request,'fbamarket.html' , {'form' : form ,
-                                              'asins' : completedDatas.objects.filter(User=request.user),
+                                              #'asins' : completedDatas.objects.filter(User=request.user),
                                               'country':[country.upper()]})
 
 
 def fbaMarketPoolPage(request,country):
+    '''
     switchCase = {
         'fr' : [CompletedFR],
         'uk' : [CompletedUK],
@@ -83,18 +84,21 @@ def fbaMarketPoolPage(request,country):
         'au' : [CompletedAU],
         'de' : [CompletedDE],
     } 
-    form = UploadFileForm(request.POST, request.FILES)
     completedDatas = switchCase[country]
     poolDatas = completedDatas.objects.get(User = request.user , Pool = True)
+    '''
+    form = UploadFileForm(request.POST, request.FILES)
     if request.method == 'POST':
         if 'send_pool' in request.POST:
             asin_list = request.POST.getlist('poolCheckBox')
+            '''
             for asin in asin_list:
                 product_to_pool =completedDatas.objects.get(User = request.user , Asin=asin) 
                 product_to_pool.Pool = False
                 product_to_pool.save()
+            '''
     data = {
-        'asins' : poolDatas ,
+        #'asins' : poolDatas ,
         'form' : form ,
         'country' : [country.upper()]
     }
