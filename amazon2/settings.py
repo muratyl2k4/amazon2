@@ -28,12 +28,14 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 
-# Application definition
 
 INSTALLED_APPS = [
-    "order_track",
-    "accounts",
-    "main",
+    "django_dramatiq",
+    "remote.apps.RemoteConfig" ,
+    "order_track.apps.OrderTrackConfig",
+    "accounts.apps.AccountsConfig",
+    "main.apps.MainConfig",
+
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -77,11 +79,33 @@ WSGI_APPLICATION = "amazon2.wsgi.application"
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
 
 DATABASES = {
-    "default": {
+
+    "default" : {
         "ENGINE": "django.db.backends.sqlite3",
         "NAME": BASE_DIR / "db.sqlite3",
     }
+    ,
+    "mysql" : {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": BASE_DIR / "db2.sqlite3",
+    }
+    ,
+   
+    }
+'''
+     "mysql": {
+        'ENGINE': 'django.db.backends.mysql',
+        'OPTIONS' : {
+        'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+        ,},
+        'NAME': 'jaylee54$deneme2',
+        'USER': 'jaylee54',
+        'PASSWORD': 'muratyl1A',
+        'HOST': 'jaylee54.mysql.pythonanywhere-services.com'
 }
+'''
+#DATABASE_ROUTERS = ["routers.db_routers.sqLiteRouter"]
+DATABASE_ROUTERS = ["routers.db_routers.sqLiteRouter" , "routers.db_routers.mySQLRouter"]
 
 
 # Password validation
